@@ -2,8 +2,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-import pandas as pd
-from db_query import get_geo_by_location, get_weekly_by_location
+# from db_query import get_geo_by_location, get_weekly_by_location
+from pd_query import get_geo_by_location, get_weekly_by_location
 
 # app configuration
 app = FastAPI()
@@ -42,11 +42,12 @@ async def get_uuser_uclick_geo(reqContinent: str, reqCountry: str, reqCity: str)
 
 @app.get('/getWeeklyGeo/')
 async def get_uuser_uclick_geo(reqContinent: str, reqCountry: str):
-    try:
-        results = get_weekly_by_location(reqContinent, reqCountry)
-        return results
-    except:
-        raise HTTPException(status_code=404, detail="Data Not Found!")
+    # try:
+    results = get_weekly_by_location(reqContinent, reqCountry)
+    return results
+    # except:
+
+    #     raise HTTPException(status_code=404, detail="Data Not Found!")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", port=8000, log_level="info", reload=True)
