@@ -6,6 +6,7 @@ from processor import get_geo_by_location_processor, get_weekly_by_location_proc
 df_pattern = pd.read_csv('data/pattern.csv')
 df_weekly = pd.read_csv('data/weekly_trend.csv',
                         na_values=[], keep_default_na=False)
+df_book = pd.read_csv('data/book.csv', na_values=[], keep_default_na=False)
 
 
 def get_geo_by_location(continent: str, country: str, city: str):
@@ -32,7 +33,7 @@ def get_weekly_by_location(continent: str, country: str):
         df_this = df_weekly[(df_weekly['continent'] == continent) &
                             (df_weekly['country'] == country)]
 
-        return get_weekly_by_location_processor(df_sib, df_this, 'country')
+        return get_weekly_by_location_processor(df_sib, df_this, 'country', df_book)
 
     # 沒有特定國家，是某一大洲，所以兄弟是其他大洲
     # 是全世界，所以兄弟是大洲
@@ -51,4 +52,4 @@ def get_weekly_by_location(continent: str, country: str):
 
             df_this = df_weekly[df_weekly['continent'] == 'All Continents']
 
-        return get_weekly_by_location_processor(df_sib, df_this, 'continent')
+        return get_weekly_by_location_processor(df_sib, df_this, 'continent', df_book)

@@ -1,5 +1,5 @@
 import pandas as pd
-from utils import str2dict
+from utils import str2dict, make_book_race
 from constants import WEEKS
 
 
@@ -30,15 +30,16 @@ def get_geo_by_location_processor(df: pd.DataFrame, country: str, city: str):
             "total_book": aggregated_data['total_book'].tolist(),
         }
     }
-
+    print(results)
     return results
 
 
-def get_weekly_by_location_processor(df_sib: pd.DataFrame, df_this: pd.DataFrame, group_by: str):
+def get_weekly_by_location_processor(df_sib: pd.DataFrame, df_this: pd.DataFrame, group_by: str, df_book: pd.DataFrame):
 
     df_this = df_this.copy()
     this_lan = str2dict(df_this, 'language_weekly_visits')
-
+    this_book_race = make_book_race(df_book, df_this['top_10_books_weekly'])
+    print(this_book_race)
     sib_data = []
     for name, group in df_sib.groupby(group_by):
         assert len(group['visit_type1_counts'].tolist()) == len(WEEKS)
@@ -65,6 +66,7 @@ def get_weekly_by_location_processor(df_sib: pd.DataFrame, df_this: pd.DataFrame
         "v3": df_this['visit_type3_counts'].tolist(),
         "v4": df_this['visit_type4_counts'].tolist(),
         "lan": this_lan,
+        # "book_race": this_book_race,
         "sib": sib_data,
     }
 
