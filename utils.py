@@ -16,7 +16,6 @@ def str2dict(df: pd.DataFrame, column_name: str, is_global: bool = True):
     # 先找出所有可能的鍵
     for entry in df[column_name]:
         entry = str(entry)
-        print(entry)
         if entry:
             pairs = entry.split(';')
             for pair in pairs:

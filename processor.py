@@ -3,6 +3,9 @@ from utils import str2dict, make_book_race
 from constants import WEEKS
 
 
+cache_weekly_id_geo = []
+
+
 def get_geo_by_location_processor(df: pd.DataFrame, country: str, city: str):
     if city == "All Cities":
         geo_metrics = df.drop(
@@ -30,7 +33,7 @@ def get_geo_by_location_processor(df: pd.DataFrame, country: str, city: str):
             "total_book": aggregated_data['total_book'].tolist(),
         }
     }
-    print(results)
+
     return results
 
 
@@ -39,7 +42,7 @@ def get_weekly_by_location_processor(df_sib: pd.DataFrame, df_this: pd.DataFrame
     df_this = df_this.copy()
     this_lan = str2dict(df_this, 'language_weekly_visits')
     this_book_race = make_book_race(df_book, df_this['top_10_books_weekly'])
-    print(this_book_race)
+
     sib_data = []
     for name, group in df_sib.groupby(group_by):
         assert len(group['visit_type1_counts'].tolist()) == len(WEEKS)
@@ -59,17 +62,47 @@ def get_weekly_by_location_processor(df_sib: pd.DataFrame, df_this: pd.DataFrame
 
     results = {
         "week": df_this['week'].tolist(),  # week or week_id
-        "total_visits": df_this['region_weekly_visits'].tolist(),
+        "place": df_this[group_by].tolist()[0],
         "total_users": df_this['unique_ips_weekly'].tolist(),
         "v1": df_this['visit_type1_counts'].tolist(),
         "v2": df_this['visit_type2_counts'].tolist(),
         "v3": df_this['visit_type3_counts'].tolist(),
         "v4": df_this['visit_type4_counts'].tolist(),
         "lan": this_lan,
-        # "book_race": this_book_race,
+        "book": this_book_race,
         "sib": sib_data,
     }
 
-    print(results)
-
     return results
+
+
+def get_weekly_id_geo_processor(df: pd.DataFrame):
+
+    if len(cache_weekly_id_geo) == 0:
+        for i, w in enumerate(WEEKS):
+            points_strings_list = df[(df['week'] == w) & (
+                df['country'] != "All Countries")]['weekly_most_common_points'].tolist()
+            for ps in points_strings_list:
+                if ps:
+                    points = ps.split(';')
+                    for p in points:
+                        p = p.split(':')
+                        g = p[0].split('_')
+
+                        count = int(p[1])
+                        lat = float(g[0])
+                        lon = float(g[1])
+
+                        cache_weekly_id_geo.append({
+                            "lat": lat,
+                            "lon": lon,
+                            "count": count,
+                            "time": i,
+                        })
+
+    weeks = [w.split('/')[0][-5:] for w in WEEKS]
+
+    return {
+        'weeks': weeks,
+        'data': cache_weekly_id_geo
+    }

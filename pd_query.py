@@ -1,5 +1,5 @@
 import pandas as pd
-from processor import get_geo_by_location_processor, get_weekly_by_location_processor
+from processor import get_geo_by_location_processor, get_weekly_by_location_processor, get_weekly_id_geo_processor
 
 # cache pd dataframes
 
@@ -53,3 +53,7 @@ def get_weekly_by_location(continent: str, country: str):
             df_this = df_weekly[df_weekly['continent'] == 'All Continents']
 
         return get_weekly_by_location_processor(df_sib, df_this, 'continent', df_book)
+
+
+def get_weekly_id_geo():
+    return get_weekly_id_geo_processor(df_weekly)
