@@ -9,7 +9,7 @@ from pd_query import (get_geo_by_location, get_weekly_by_location,
 # app configuration
 app = FastAPI()
 
-origins = ["http://localhost:3000", "http://localhost:3000/"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,13 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# data cache
-# df = pd.read_csv("./data/small_data.csv")
-# df['media_type'] = df['media_type'].apply(
-#     lambda x: str(x).split("=")[-1].strip())
-# df['biliography_language'] = df['biliography_language'].apply(
-#     lambda x: str(x).split("=")[-1].strip())
 
 
 @app.get("/")
@@ -43,56 +36,58 @@ async def get_uuser_uclick_geo(reqContinent: str, reqCountry: str, reqCity: str)
 
 @app.get('/getWeeklyGeo/')
 async def get_weekly_geo(reqContinent: str, reqCountry: str):
-    # try:
-    results = get_weekly_by_location(reqContinent, reqCountry)
-    return results
-    # except:
-
-    #     raise HTTPException(status_code=404, detail="Data Not Found!")
+    try:
+        results = get_weekly_by_location(reqContinent, reqCountry)
+        return results
+    except:
+        raise HTTPException(status_code=404, detail="Data Not Found!")
 
 
 @app.get('/getWeeklyMap/')
 async def get_weekly_map():
-    # try:
-    results = get_weekly_id_geo()
-    return results
-    # except:
-
-    #     raise HTTPException(status_code=404, detail="Data Not Found!")
+    try:
+        results = get_weekly_id_geo()
+        return results
+    except:
+        raise HTTPException(status_code=404, detail="Data Not Found!")
 
 
 @app.get("/search/")
 async def getSearch(query: str):
-   # try:
-    results = get_search(query)
-    return results
-    # except:
-
-    #     raise HTTPException(status_code=404, detail="Data Not Found!")
+    try:
+        results = get_search(query)
+        return results
+    except:
+        raise HTTPException(status_code=404, detail="Data Not Found!")
 
 
 @app.get("/network/")
 async def getNetwork(method: str, query: str):
-   # try:
-    query = query.split(',')
-    results = get_network(query, method)
-    return results
-    # except:
-
-    #     raise HTTPException(status_code=404, detail="Data Not Found!")
+    try:
+        query = query.split(',')
+        results = get_network(query, method)
+        return results
+    except:
+        raise HTTPException(status_code=404, detail="Data Not Found!")
 
 
 @app.get("/arcs/points/")
 async def getArcsPoints():
-    results = get_arcs_points()
-    return results
+    try:
+        results = get_arcs_points()
+        return results
+    except:
+        raise HTTPException(status_code=404, detail="Data Not Found!")
 
 
 @app.get("/arcs/arcs/")
 async def getArcsArcs(lat_lon: str):
-    results = get_arcs_arcs(lat_lon)
-    return results
+    try:
+        results = get_arcs_arcs(lat_lon)
+        return results
+    except:
+        raise HTTPException(status_code=404, detail="Data Not Found!")
 
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", port=8000, log_level="info", reload=True)
+# if __name__ == "__main__":
+#     uvicorn.run("main:app", port=8000, log_level="info", reload=True)
