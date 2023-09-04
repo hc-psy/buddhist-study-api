@@ -1,5 +1,12 @@
 import pandas as pd
-from processor import get_geo_by_location_processor, get_weekly_by_location_processor, get_weekly_id_geo_processor
+import numpy as np
+from processor import (get_geo_by_location_processor,
+                       get_weekly_by_location_processor,
+                       get_weekly_id_geo_processor,
+                       get_search_processor,
+                       get_network_processor,
+                       get_arcs_points_processor,
+                       get_arcs_arcs_processor)
 
 # cache pd dataframes
 
@@ -7,6 +14,15 @@ df_pattern = pd.read_csv('data/pattern.csv')
 df_weekly = pd.read_csv('data/weekly_trend.csv',
                         na_values=[], keep_default_na=False)
 df_book = pd.read_csv('data/book.csv', na_values=[], keep_default_na=False)
+df_topic_map = pd.read_csv('data/topic_map.csv')
+df_user_map = pd.read_csv('data/lat_lon_map.csv')
+
+# cache np arrays
+
+H_n = np.load('data/book_NMF_288430x10.npy')
+H_t = np.load('data/book_Transformer_288430x10.npy').astype('float64')
+
+H_u = np.load('data/user_NMF_10406x10.npy')
 
 
 def get_geo_by_location(continent: str, country: str, city: str):
@@ -57,3 +73,25 @@ def get_weekly_by_location(continent: str, country: str):
 
 def get_weekly_id_geo():
     return get_weekly_id_geo_processor(df_weekly)
+
+
+def get_search(query: str):
+    query_stripped = query.strip()
+    return get_search_processor(df_topic_map, query_stripped)
+
+
+def get_network(query: list, method: str):
+    query_stripped = [q.strip() for q in query]
+
+    if method == 'NMF':
+        return get_network_processor(df_topic_map, H_n, query_stripped)
+    elif method == 'Transformer':
+        return get_network_processor(df_topic_map, H_t, query_stripped)
+
+
+def get_arcs_points():
+    return get_arcs_points_processor(df_user_map)
+
+
+def get_arcs_arcs(lat_lon_name: str):
+    return get_arcs_arcs_processor(df_user_map, lat_lon_name, H_u)

@@ -118,7 +118,6 @@ celerybeat.pid
 
 connector.py
 
-data/
 .vscode/
 
 # SageMath parsed files

@@ -6,3 +6,7 @@ SQLAlchemy==2.0.17
 PyMySQL==1.1.0
 cloud-sql-python-connector==1.2.4
 tqdm
+fuzzywuzzy
+python-Levenshtein
+scikit-learn
+python-multipart
