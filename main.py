@@ -9,7 +9,7 @@ from pd_query import (get_geo_by_location, get_weekly_by_location,
 # app configuration
 app = FastAPI()
 
-origins = ["https://buddhilab.netlify.app"]
+origins = ["https://buddhilab.netlify.app", "http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,

@@ -20,6 +20,8 @@ def str2dict(df: pd.DataFrame, column_name: str, is_global: bool = True):
             pairs = entry.split(';')
             for pair in pairs:
                 key, _ = pair.strip().replace("'", "").split(':')
+                print(key)
+                key = "cn" if key == "tw" else key
                 all_keys.add(key)
 
     # 再根據所有可能的鍵來建立結果
@@ -30,6 +32,7 @@ def str2dict(df: pd.DataFrame, column_name: str, is_global: bool = True):
 
         for pair in pairs:
             key, value = pair.strip().replace("'", "").split(':')
+            key = "cn" if key == "tw" else key
             current_data[key] = int(value)
 
         for key in all_keys:
